@@ -1,0 +1,10 @@
+/src/
+/test/
+/coverage/
+/example/
+tsconfig*
+prettier.config.js
+.editorconfig
+.travis.yml
+tslint.json
+jest.config.js

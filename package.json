@@ -1,0 +1,50 @@
+{
+  "name": "@lifeomic/twilio-webhook-validator-koa",
+  "version": "0.1.0",
+  "description": "Koa middleware for Twilio webhook request validation",
+  "author": "LifeOmic <development@lifeomic.com>",
+  "license": "MIT",
+  "main": "./dist/src/",
+  "module": "./dist/es6/src/",
+  "jsnext:main": "./dist/esnext/src/",
+  "types": "./dist/src/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lifeomic/twilio-webhook-validator-koa.git"
+  },
+  "engines": {
+    "node": ">= 8.0.0"
+  },
+  "scripts": {
+    "compile-src-cjs": "tsc --declaration --declarationDir ./dist -p tsconfig-src-cjs.json",
+    "compile-src-es6": "tsc -p tsconfig-src-es6.json",
+    "compile-src-esnext": "tsc -p tsconfig-src-esnext.json",
+    "precompile-src": "rm -rf ./dist",
+    "compile-src": "yarn compile-src-cjs && yarn compile-src-es6 && yarn compile-src-esnext",
+    "lint": "tslint --format codeFrame --project tsconfig.json 'src/**/*.ts' 'test/**/*.ts'",
+    "pretest": "yarn lint",
+    "test": "jest",
+    "prebuild": "yarn test",
+    "build": "yarn compile-src"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.6",
+    "@types/koa": "^2.0.48",
+    "@types/koa-bodyparser": "^4.2.2",
+    "@types/koa-cors": "^0.0.0",
+    "@types/koa-router": "^7.0.39",
+    "@types/node": "^11.9.5",
+    "@types/superagent": "^3.8.6",
+    "jest": "^24.1.0",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-cors": "^0.0.16",
+    "koa-router": "^7.4.0",
+    "superagent": "^4.1.0",
+    "ts-jest": "^24.0.0",
+    "tslint": "^5.13.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-semistandard": "^7.0.0",
+    "typescript": "^3.3.3333"
+  }
+}
