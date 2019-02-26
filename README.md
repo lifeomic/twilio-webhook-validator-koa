@@ -24,11 +24,10 @@ router.post(
     authToken: process.env.TWILIO_AUTH_TOKEN
   }),
   (ctx) => {
-    ctx.body = `
-      <Response>
-        <Say>Twilio request validation succeeded!</Say>
-      </Response>
-    `;
+    ctx.body = `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say>Twilio request validation succeeded!</Say>
+</Response>`;
   }
 );
 
