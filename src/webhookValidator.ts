@@ -2,6 +2,10 @@ import * as url from 'url';
 import * as crypto from 'crypto';
 
 import { Middleware, Context } from 'koa';
+import {
+  validateRequest,
+  validateRequestWithBody
+} from 'twilio/lib/webhooks/webhooks';
 
 export const TWILIO_SIGNATURE_HEADER_NAME = 'X-Twilio-Signature';
 export const ERR_INVALID_REQUEST = 'Twilio request validation failed.';
@@ -42,6 +46,7 @@ export function getExpectedTwilioSignature({
   originalUrl: string;
   body: Record<string, any>;
 }) {
+  if (originalUrl.includes('bodySHA256')) body = {};
   const data = Object.entries(body)
     .sort()
     .reduce((acc, [key, value]) => acc + key + value, originalUrl);
@@ -70,18 +75,9 @@ export function webhookValidator({
     const rawBody = JSON.stringify(body);
     const hasBodyHash = originalUrl.includes('bodySHA256');
 
-    const validSignature =
-      signature ===
-      getExpectedTwilioSignature({
-        authToken,
-        body,
-        originalUrl
-      });
-
     const valid = hasBodyHash
-      ? context.query.bodySHA256 === getSha256HexDigest(Buffer.from(rawBody)) &&
-        validSignature
-      : validSignature;
+      ? validateRequestWithBody(authToken, signature, originalUrl, rawBody)
+      : validateRequest(authToken, signature, originalUrl, body);
 
     if (!valid) {
       return context.throw(403, new Error(ERR_INVALID_REQUEST));

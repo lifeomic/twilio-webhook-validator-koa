@@ -23,8 +23,11 @@ const getMockRequestBody = (): [Record<string, string>, string] => {
     Caller: '+14158675309',
     CallSid: 'CA1234567890ABCDE'
   };
-  const rawPayload = JSON.stringify(payload);
-  return [payload, getSha256HexDigest(Buffer.from(rawPayload))];
+
+  return [
+    payload,
+    getSha256HexDigest(Buffer.from(JSON.stringify(payload), 'utf-8'))
+  ];
 };
 
 const mockTwiMl = `<?xml version="1.0" encoding="UTF-8"?>

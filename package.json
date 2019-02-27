@@ -27,6 +27,9 @@
     "prebuild": "yarn test",
     "build": "yarn compile-src"
   },
+  "peerDependencies": {
+    "twilio": "*"
+  },
   "devDependencies": {
     "@types/jest": "^24.0.6",
     "@types/koa": "^2.0.48",
@@ -35,6 +38,7 @@
     "@types/koa-router": "^7.0.39",
     "@types/node": "^11.9.5",
     "@types/superagent": "^3.8.6",
+    "@types/twilio": "^0.0.10",
     "jest": "^24.1.0",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
@@ -45,6 +49,7 @@
     "tslint": "^5.13.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-config-semistandard": "^7.0.0",
+    "twilio": "^3.28.1",
     "typescript": "^3.3.3333"
   }
 }
