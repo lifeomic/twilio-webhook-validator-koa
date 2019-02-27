@@ -66,7 +66,8 @@ export function webhookValidator({
         ? rawOriginalUrl.replace('%3F', '?')
         : rawOriginalUrl;
     const signature = context.get(TWILIO_SIGNATURE_HEADER_NAME);
-    const { body, rawBody } = context.request;
+    const { body } = context.request;
+    const rawBody = JSON.stringify(body);
     const hasBodyHash = originalUrl.includes('bodySHA256');
 
     const validSignature =
