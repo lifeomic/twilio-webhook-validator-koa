@@ -7,8 +7,11 @@ import * as bodyParser from 'koa-bodyparser';
 import * as request from 'superagent';
 
 import {
-  getSha256HexDigest,
   getExpectedTwilioSignature,
+  getExpectedBodyHash
+} from 'twilio/lib/webhooks/webhooks';
+
+import {
   WebhookValidatorOptions,
   webhookValidator,
   TWILIO_SIGNATURE_HEADER_NAME
@@ -24,10 +27,7 @@ const getMockRequestBody = (): [Record<string, string>, string] => {
     CallSid: 'CA1234567890ABCDE'
   };
 
-  return [
-    payload,
-    getSha256HexDigest(Buffer.from(JSON.stringify(payload), 'utf-8'))
-  ];
+  return [payload, getExpectedBodyHash(JSON.stringify(payload))];
 };
 
 const mockTwiMl = `<?xml version="1.0" encoding="UTF-8"?>
@@ -70,11 +70,7 @@ test('successfully resolve response with valid Twilio request signature and body
 
   const [body, bodyHash] = getMockRequestBody();
   const url = `${server.url}?bodySHA256=${bodyHash}`;
-  const expectedSignature = getExpectedTwilioSignature({
-    authToken,
-    body,
-    originalUrl: url
-  });
+  const expectedSignature = getExpectedTwilioSignature(authToken, url, body);
 
   await request
     .post(url)
@@ -101,11 +97,11 @@ test('successfully resolves response with valid Twilio request signature', async
   const server = await createTestService({ authToken });
 
   const [body] = getMockRequestBody();
-  const expectedSignature = getExpectedTwilioSignature({
+  const expectedSignature = getExpectedTwilioSignature(
     authToken,
-    body,
-    originalUrl: server.url
-  });
+    server.url,
+    body
+  );
 
   await request
     .post(server.url)
@@ -122,11 +118,11 @@ test('uses process.env.TWILIO_AUTH_TOKEN to resolve Twilio authToken', async () 
   process.env.TWILIO_AUTH_TOKEN = getMockAuthToken();
   const server = await createTestService();
 
-  const expectedSignature = getExpectedTwilioSignature({
-    authToken: process.env.TWILIO_AUTH_TOKEN,
-    originalUrl: server.url,
-    body: {}
-  });
+  const expectedSignature = getExpectedTwilioSignature(
+    process.env.TWILIO_AUTH_TOKEN,
+    server.url,
+    {}
+  );
 
   await request
     .post(server.url)
@@ -158,11 +154,7 @@ test('throws error with invalid bodySHA256', async () => {
 
   const [body] = getMockRequestBody();
   const url = `${server.url}?bodySHA256=bogus`;
-  const expectedSignature = getExpectedTwilioSignature({
-    originalUrl: url,
-    authToken,
-    body
-  });
+  const expectedSignature = getExpectedTwilioSignature(url, authToken, body);
 
   await expect(
     request
@@ -171,16 +163,4 @@ test('throws error with invalid bodySHA256', async () => {
       .send(body)
   ).rejects.toThrowError('Forbidden');
   server.close();
-});
-
-test('valid example request returns expected Twilio request signature', () => {
-  // based on official Twilio sample: https://www.twilio.com/docs/usage/security#validating-requests
-  const authToken = '12345';
-  const originalUrl = 'https://mycompany.com/myapp.php?foo=1&bar=2';
-  const xTwilioSignature = 'RSOYDt4T1cUTdK1PDd93/VVr8B8=';
-  const [body] = getMockRequestBody();
-
-  expect(getExpectedTwilioSignature({ authToken, body, originalUrl })).toEqual(
-    xTwilioSignature
-  );
 });
