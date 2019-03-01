@@ -1,5 +1,4 @@
 import * as url from 'url';
-import * as crypto from 'crypto';
 
 import { Middleware, Context } from 'koa';
 import {
@@ -12,45 +11,12 @@ export const ERR_INVALID_REQUEST = 'Twilio request validation failed.';
 export const ERR_TOKEN_REQUIRED =
   'Twilio authToken is required for request validation.';
 
-export function getHmacSha1Base64Digest(
-  symmetricKey: string,
-  data: Buffer
-): string {
-  return crypto
-    .createHmac('sha1', symmetricKey)
-    .update(data)
-    .digest('base64');
-}
-
-export function getSha256HexDigest(data: Buffer): string {
-  return crypto
-    .createHash('sha256')
-    .update(data)
-    .digest('hex');
-}
-
 function getUrlFromContext(context: Context): string {
   return url.format({
     protocol: context.protocol,
     host: context.host,
     pathname: context.originalUrl
   });
-}
-
-export function getExpectedTwilioSignature({
-  authToken,
-  body,
-  originalUrl
-}: {
-  authToken: string;
-  originalUrl: string;
-  body: Record<string, any>;
-}) {
-  if (originalUrl.includes('bodySHA256')) body = {};
-  const data = Object.entries(body)
-    .sort()
-    .reduce((acc, [key, value]) => acc + key + value, originalUrl);
-  return getHmacSha1Base64Digest(authToken, Buffer.from(data));
 }
 
 export interface WebhookValidatorOptions {
