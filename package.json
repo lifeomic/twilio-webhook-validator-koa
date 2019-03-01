@@ -1,6 +1,6 @@
 {
   "name": "@lifeomic/twilio-webhook-validator-koa",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Koa middleware for Twilio webhook request validation",
   "author": "LifeOmic <development@lifeomic.com>",
   "license": "MIT",
