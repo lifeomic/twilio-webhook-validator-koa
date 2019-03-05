@@ -1,6 +1,6 @@
 import * as url from 'url';
 
-import { Middleware, Context } from 'koa';
+import { Middleware } from 'koa';
 import {
   validateRequest,
   validateRequestWithBody
@@ -11,27 +11,26 @@ export const ERR_INVALID_REQUEST = 'Twilio request validation failed.';
 export const ERR_TOKEN_REQUIRED =
   'Twilio authToken is required for request validation.';
 
-function getUrlFromContext(context: Context): string {
-  return url.format({
-    protocol: context.protocol,
-    host: context.host,
-    pathname: context.originalUrl
-  });
-}
-
 export interface WebhookValidatorOptions {
+  host?: string;
   authToken?: string;
 }
 
 export function webhookValidator({
-  authToken = process.env.TWILIO_AUTH_TOKEN
+  authToken = process.env.TWILIO_AUTH_TOKEN,
+  host
 }: WebhookValidatorOptions = {}): Middleware {
   return async function hook(context, next) {
     if (!authToken) {
       return context.throw(500, ERR_TOKEN_REQUIRED);
     }
 
-    const rawOriginalUrl = getUrlFromContext(context);
+    const rawOriginalUrl = url.format({
+      protocol: context.protocol,
+      host: host || context.host,
+      pathname: context.originalUrl
+    });
+
     const originalUrl =
       context.originalUrl.search(/\?/) >= 0
         ? rawOriginalUrl.replace('%3F', '?')
