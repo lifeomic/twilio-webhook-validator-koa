@@ -114,7 +114,26 @@ test('successfully resolves response with valid Twilio request signature', async
   server.close();
 });
 
-test('uses process.env.TWILIO_AUTH_TOKEN to resolve Twilio authToken', async () => {
+test('uses custom host to validate Twilio signature', async () => {
+  const host = 'api.acme.io';
+  const authToken = getMockAuthToken();
+  const server = await createTestService({ authToken, host });
+
+  const expectedSignature = getExpectedTwilioSignature(
+    authToken,
+    `http://${host}/twilio`,
+    {}
+  );
+
+  await request
+    .post(server.url)
+    .set(TWILIO_SIGNATURE_HEADER_NAME, expectedSignature)
+    .send()
+    .then(({ status }) => expect(status).toEqual(200));
+  server.close();
+});
+
+test('uses env variables to resolve Twilio authToken', async () => {
   process.env.TWILIO_AUTH_TOKEN = getMockAuthToken();
   const server = await createTestService();
 
