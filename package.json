@@ -37,7 +37,7 @@
     "@types/koa-cors": "^0.0.0",
     "@types/koa-router": "^7.0.39",
     "@types/node": "^11.9.5",
-    "@types/superagent": "^3.8.6",
+    "@types/superagent": "^4.1.0",
     "@types/twilio": "^0.0.10",
     "jest": "^24.1.0",
     "koa": "^2.7.0",
