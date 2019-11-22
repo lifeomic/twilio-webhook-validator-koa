@@ -167,6 +167,17 @@ test('throws error with invalid Twilio request signature', async () => {
   server.close();
 });
 
+test('throws error with Twilio request without signature', async () => {
+  const authToken = getMockAuthToken();
+  const server = await createTestService({ authToken });
+  const [body] = getMockRequestBody();
+  await expect(request.post(server.url).send(body)).rejects.toThrowError(
+    'Bad Request'
+  );
+
+  server.close();
+});
+
 test('throws error with invalid bodySHA256', async () => {
   const authToken = getMockAuthToken();
   const server = await createTestService({ authToken });
