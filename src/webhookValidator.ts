@@ -15,11 +15,13 @@ export const ERR_SIGNATURE_REQUIRED =
 
 export interface WebhookValidatorOptions {
   host?: string;
+  protocol?: string;
   authToken?: string;
 }
 
 export function webhookValidator({
   authToken = process.env.TWILIO_AUTH_TOKEN,
+  protocol,
   host
 }: WebhookValidatorOptions = {}): Middleware {
   return async function hook(context, next) {
@@ -34,7 +36,7 @@ export function webhookValidator({
     }
 
     const rawOriginalUrl = url.format({
-      protocol: context.protocol,
+      protocol: protocol || context.protocol,
       host: host || context.host,
       pathname: context.originalUrl
     });
