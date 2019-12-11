@@ -52,8 +52,11 @@ async function createTestService(
   );
   app.use(router.routes());
 
+  const protocol = options ? options.protocol || 'http' : 'http';
+
   const server = http.createServer(app.callback());
-  const host = 'http://127.0.0.1';
+  const host = `${protocol}://127.0.0.1`;
+
   server.listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   const { port } = server.address() as net.AddressInfo;
@@ -122,6 +125,26 @@ test('uses custom host to validate Twilio signature', async () => {
   const expectedSignature = getExpectedTwilioSignature(
     authToken,
     `http://${host}/twilio`,
+    {}
+  );
+
+  await request
+    .post(server.url)
+    .set(TWILIO_SIGNATURE_HEADER_NAME, expectedSignature)
+    .send()
+    .then(({ status }) => expect(status).toEqual(200));
+  server.close();
+});
+
+test('uses custom host and protocol to validate Twilio signature', async () => {
+  const protocol = 'http';
+  const host = 'api.acme.io';
+  const authToken = getMockAuthToken();
+  const server = await createTestService({ authToken, host, protocol });
+
+  const expectedSignature = getExpectedTwilioSignature(
+    authToken,
+    `${protocol}://${host}/twilio`,
     {}
   );
 
