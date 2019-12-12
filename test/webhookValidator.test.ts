@@ -52,7 +52,7 @@ async function createTestService(
   );
   app.use(router.routes());
 
-  const protocol = options ? options.protocol || 'http' : 'http';
+  const protocol = (options && options.protocol) || 'http';
 
   const server = http.createServer(app.callback());
   const host = `${protocol}://127.0.0.1`;
