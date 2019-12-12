@@ -33,3 +33,13 @@ router.post(
 
 app.use(router.routes()).listen(3000);
 ```
+
+# Example usage with custom host and port (e.g. behind proxy)
+
+```typescript
+webhookValidator({
+  authToken: process.env.TWILIO_AUTH_TOKEN,
+  host: ctx.header['x-forwarded-host'],
+  protocol: ctx.header['x-forwarded-proto']
+});
+```
