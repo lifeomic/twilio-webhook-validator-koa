@@ -34,7 +34,7 @@ router.post(
 app.use(router.routes()).listen(3000);
 ```
 
-# Example usage with custom host and port (e.g. behind proxy)
+# Example usage with custom host and protocol (e.g. behind a proxy)
 
 ```typescript
 webhookValidator({
