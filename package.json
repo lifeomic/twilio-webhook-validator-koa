@@ -36,7 +36,7 @@
     "@types/koa-bodyparser": "^4.2.2",
     "@types/koa-cors": "^0.0.0",
     "@types/koa-router": "^7.0.39",
-    "@types/node": "^13.1.0",
+    "@types/node": "^14.0.0",
     "@types/superagent": "^4.1.0",
     "@types/twilio": "^2.11.0",
     "jest": "^24.1.0",
