@@ -16,7 +16,7 @@
     "typescript": "^3.3.3333"
   },
   "dependencies": {
-    "koa": "^2.7.0",
+    "koa": "^2.15.4",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
     "twilio": "^3.29.0"
