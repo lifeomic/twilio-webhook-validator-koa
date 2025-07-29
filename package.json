@@ -40,7 +40,7 @@
     "@types/superagent": "^4.1.0",
     "@types/twilio": "^2.11.0",
     "jest": "^24.1.0",
-    "koa": "^2.7.0",
+    "koa": "^3.0.1",
     "koa-bodyparser": "^4.2.1",
     "koa-cors": "^0.0.16",
     "koa-router": "^7.4.0",
